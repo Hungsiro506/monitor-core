@@ -1,0 +1,30 @@
+package parser;
+import java.util.Queue;
+import java.util.LinkedList;
+public class Parser {
+	private LinkedList<LogMessage> queue;
+	private int MaxSize = 100;
+	public Parser(){
+		this.queue = new LinkedList<LogMessage>();
+	}
+	public void addFirst(LogMessage msg){
+		this.queue.addFirst(msg);
+	}
+	public void removeLast(){
+		this.queue.removeLast();
+	}
+	public void remove(int index){
+		this.queue.remove(index);
+	}
+	/*
+	 * Add new element to queue, remove last if queue is full.
+	 * By default size of queue  = 100;
+	 */
+	public void addNewMsg(LogMessage msg){
+		if(this.queue.size() == this.MaxSize){
+			
+		}
+	}
+	
+	
+}

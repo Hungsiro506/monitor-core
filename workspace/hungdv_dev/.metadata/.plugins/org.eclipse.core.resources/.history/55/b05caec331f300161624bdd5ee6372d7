@@ -1,0 +1,5 @@
+package main.bd.queue;
+import java.util.concurrent.ConcurrentLinkedDeque;
+public class FtelQueue<T> {
+	
+}

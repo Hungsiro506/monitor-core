@@ -1,0 +1,59 @@
+package sender;
+import parser.Parser;
+
+import java.io.IOException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import io.github.hengyunabc.zabbix.sender.DataObject;
+import io.github.hengyunabc.zabbix.sender.SenderResult;
+import io.github.hengyunabc.zabbix.sender.ZabbixSender;
+import utils.Constants;
+
+
+public class Zabbix_Sender implements Runnable{
+	private String zabbixServerIP;
+	private int port;
+	private Parser parser;
+	private ZabbixSender sender;
+	private String agentIP;
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+		while(true){
+			
+			int totalError = 0;
+			if(parser.pull() !=  null) value = parser.pull().getTotalError();
+			DataObject totalError_DataObject = new DataObject();
+			
+			totalError_DataObject.setHost(this.agentIP);
+			totalError_DataObject.setKey("payTV_ServiceInfo_TotalError");
+			totalError_DataObject.setValue(Integer.toString(value));
+			System.out.println(totalError_DataObject.getValue());
+			totalError_DataObject.setClock(System.currentTimeMillis()/1000);
+			
+	        try {
+				SenderResult result = sender.send(totalError_DataObject);
+				System.out.println("result:" + result);
+		        if (result.success()) {
+		            System.out.println("send success.");
+		        } else {
+		            System.err.println("send fail!");
+		        }
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	        
+			
+		}
+	}
+	public Zabbix_Sender(String host, int port, Parser parser,String agentIP){
+		this.zabbixServerIP = host;
+		this.port = port; 
+		this.parser = parser;
+		this.sender = new ZabbixSender(host,port);
+		this.agentIP = agentIP;
+	}
+
+}

@@ -1,0 +1,5 @@
+	String logEx = "[INFO] main InfoLog 09 Feb 2017 09:52:24 - Done parse /data/fbox/logs/2017/02/09/09/fbox_9.txt | total: 151325 | print: 145448 | time: 20585 | at: 1486608744014";
+		Parser parser = new Parser();
+		parser.parserAndPush(logEx);
+		System.out.println(parser.queue.getLast().getTotalError());
+		System.out.println(parser.pull().getTotalError());

@@ -1,0 +1,6 @@
+package bd.sender;
+import java.util.concurrent.ConcurrentLinkedDeque;
+
+public interface ISender<T> {
+	
+}

@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename local variable &apos;zabbixServer&apos; in &apos;sender.Zabbix_Sender.send(...)&apos; to &apos;agentIP&apos;&#x0A;- Original project: &apos;paytv-service-monitor&apos;&#x0A;- Original element: &apos;sender.Zabbix_Sender.send(String, String, String).zabbixServer&apos;&#x0A;- Renamed element: &apos;zabbixServer&apos;&#x0A;- Update references to refactored element" description="Rename local variable &apos;zabbixServer&apos;" id="org.eclipse.jdt.ui.rename.local.variable" input="/src&lt;sender{Zabbix_Sender.java[Zabbix_Sender~send~QString;~QString;~QString;@zabbixServer!2275!2293!2282!2293!QString;!0!true" name="agentIP" references="true" stamp="1487056927358" version="1.0"/>
+</session>

@@ -1,0 +1,7 @@
+{
+"input" : "/build/payTV/VERY_TOTAL/total_17_t1.csv",
+"output" : "/data/user/hungvd8/total_17_t1_hungdv_test_2nd",
+"beginDate" : "2017-01-01 00:00:00",
+"endDate" : "2017-02-01 00:00:00"
+}
+

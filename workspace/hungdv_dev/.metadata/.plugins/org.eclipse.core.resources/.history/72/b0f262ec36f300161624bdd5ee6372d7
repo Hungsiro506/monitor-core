@@ -1,0 +1,13 @@
+package main.bd.sender;
+
+/**
+ * 
+ * @author hungdv
+ *
+ */
+/*
+ * Base interface for all senders, zabbix, prometheus, datadogs, etc.
+ */
+public interface ISender {
+	  void send();
+}

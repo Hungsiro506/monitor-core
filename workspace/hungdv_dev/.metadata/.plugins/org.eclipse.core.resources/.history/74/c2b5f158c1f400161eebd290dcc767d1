@@ -1,0 +1,32 @@
+package bd.paytv.parser;
+
+import java.util.ArrayList;
+
+public class LogMessage {
+	
+	private int totalRead;
+	private int totalWrite;
+	private int totalError;
+	
+	public LogMessage(int totalRead, int totalWrite){
+		this.totalRead = totalRead;
+		this.totalWrite = totalWrite;
+		this.totalError = (totalRead > totalWrite)?(totalRead - totalWrite) : 0;
+	}
+	public LogMessage(ArrayList<String> properties){
+		this(Integer.parseInt(properties.get(0)),Integer.parseInt(properties.get(1)));
+	}
+	public int getTotalRead(){	return this.totalRead;	}
+	public int getTotalWrite(){	return this.totalWrite;	}
+	public int getTotalError(){	return this.totalError;	}
+	public void setTotalRead(int totalRead){this.totalRead = totalRead;}
+	public void setTotalWrite(int totalWrite){
+		this.totalWrite = totalWrite;
+	}
+	public LogMessage(){
+		
+	}
+	
+	
+
+}

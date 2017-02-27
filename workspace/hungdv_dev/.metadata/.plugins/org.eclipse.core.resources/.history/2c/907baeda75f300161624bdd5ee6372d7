@@ -1,0 +1,52 @@
+package bd.paytv.parser;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.Arrays;
+import java.util.Map;
+
+
+import main.bd.message.*;
+
+public class MessageMetricsParser {
+	private String massageEntryPattern;
+	private Pattern pattern;
+	ObjectMapper oMapper;
+	
+	public MessageMetricsParser(String massageEntryPattern){
+		this.massageEntryPattern = massageEntryPattern;
+		this.pattern = Pattern.compile(massageEntryPattern);
+		this.oMapper =  new ObjectMapper();
+	}
+	
+	public LogMessage getMessageObject(String messageEntryLine){
+		if(this.extractValues(messageEntryLine).size()>0 ){
+			LogMessage lm =  new LogMessage(this.extractValues(messageEntryLine));
+			Map<String,String> map = this.oMapper.convertValue(lm, Map.class);
+			HashMap<String,String> metrics = new HashMap<String,String>(map);
+			MetricsMessage ms = new MetricsMessage(metrics);
+			
+			
+		}
+		else return null;
+	}
+	
+	public ArrayList<String> extractValues(String logEntryLine){
+		Matcher matcher = this.pattern.matcher(logEntryLine);
+		if( matcher.matches()){
+			ArrayList<String> groups = new ArrayList<String>();
+			groups.add(matcher.group(6)); // hard code ! 
+			groups.add(matcher.group(9)); // hard code !
+			return groups;
+		}
+		else return new ArrayList<String>();
+	}
+	public static void main(String[] args){
+		String messageEntryLine = "Done parse /data/fbox/logs/2017/02/09/09/fbox_11.txt | total: 161641 | print: 155081 | time: 13113 | at: 1486609336922";
+		String regex = "(\\bDone) ([^ ]*) ([^ ]*) ([^ ]*) ([^ ]*) ([\\d]+) ([^ ]*) ([^ ]*) ([\\d]+) (.*)$";
+		MessageMetricsParser parser = new MessageMetricsParser(regex);
+		System.out.println("Total Error" +  parser.getMessageObject(messageEntryLine).getTotalError());
+	}
+}

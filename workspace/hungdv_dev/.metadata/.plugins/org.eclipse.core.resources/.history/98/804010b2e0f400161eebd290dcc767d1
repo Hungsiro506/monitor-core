@@ -1,0 +1,47 @@
+package bd.paytv.log_tailer;
+
+import java.io.File;
+import java.io.RandomAccessFile;
+
+public class LogTailerTest implements Runnable {
+	
+	private boolean debug = false;
+	private int 	runEverySeconds = 2000;
+	private long 	lastKnownPosition =0;
+	private boolean shouldIRun = true;
+	private File	logFile = null;
+	private static int counter =0;
+	
+	public void run() {
+		// TODO Auto-generated method stub
+		try{
+			while(souldIRUn){
+				Thread.sleep(this.runEverySeconds);
+				long fileLength = logFile.length();
+				if(fileLength > lastKnownPosition){
+					RandomAccessFile readWriteFileAccess = new RandomAccessFile(logFile, "rw");
+					readWriteFileAccess.seek(lastKnownPosition);
+					String line = null;
+					while((line = readWriteFileAccess.readLine()) != null){
+						System.out.println(line);
+						parser.parserAndPush(line);
+						//printLine(line);
+						counter ++;
+					}
+					lastKnownPosition = readWriteFileAccess.getFilePointer();
+					readWriteFileAccess.close();
+				}
+				else{
+					if(debug)
+						this.printLine("Hmm.. Couldn't found new line after line # " + counter);
+				}
+			}
+		}catch(Exception e){
+			stopRunning();
+		}
+		if (debug)
+			this.printLine("Exit the program...");
+	}
+	
+
+}

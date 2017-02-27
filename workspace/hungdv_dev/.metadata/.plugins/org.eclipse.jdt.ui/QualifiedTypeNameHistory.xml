@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+<fullyQualifiedTypeName name="org.apache.commons.cli.GnuParser"/>
+<fullyQualifiedTypeName name="com.fasterxml.jackson.databind.ObjectMapper"/>
+<fullyQualifiedTypeName name="bd.paytv.statistic.RunerConfig"/>
+<fullyQualifiedTypeName name="parser.LogMessage"/>
+<fullyQualifiedTypeName name="java.util.concurrent.ConcurrentLinkedQueue"/>
+<fullyQualifiedTypeName name="java.lang.System"/>
+<fullyQualifiedTypeName name="java.util.Set"/>
+<fullyQualifiedTypeName name="java.util.Iterator"/>
+<fullyQualifiedTypeName name="java.util.Map"/>
+<fullyQualifiedTypeName name="java.util.Map.Entry"/>
+<fullyQualifiedTypeName name="java.util.concurrent.ConcurrentLinkedDeque"/>
+<fullyQualifiedTypeName name="bd.paytv.parser.MessageMetricsParser"/>
+<fullyQualifiedTypeName name="java.util.regex.Pattern"/>
+<fullyQualifiedTypeName name="java.util.HashMap"/>
+<fullyQualifiedTypeName name="main.bd.message.MetricsMessage"/>
+<fullyQualifiedTypeName name="bd.paytv.parser.Parser"/>
+<fullyQualifiedTypeName name="main.bd.sender.ZabbixSender"/>
+<fullyQualifiedTypeName name="main.bd.sender.ZabbixSenderImpl"/>
+<fullyQualifiedTypeName name="main.bd.sender.SenderFactory"/>
+<fullyQualifiedTypeName name="main.bd.sender.ISender"/>
+<fullyQualifiedTypeName name="main.bd.queue.FtelQueue"/>
+<fullyQualifiedTypeName name="org.apache.commons.cli.CommandLineParser"/>
+<fullyQualifiedTypeName name="org.apache.commons.cli.HelpFormatter"/>
+<fullyQualifiedTypeName name="java.util.concurrent.ExecutorService"/>
+<fullyQualifiedTypeName name="java.util.concurrent.Executors"/>
+</qualifiedTypeNameHistroy>

@@ -1,0 +1,41 @@
+Start empty PostgreSQL server instance
+# sudo docker run --name postgres-server -t \
+-e POSTGRES_USER="zabbix" \
+-e POSTGRES_PASSWORD="zabbix" \
+-e POSTGRES_DB="zabbix_pwd" \
+-d postgres:latest
+2. Start Zabbix snmptraps instance
+
+# sudo docker run --name zabbix-snmptraps -t \
+-v /zbx_instance/snmptraps:/var/lib/zabbix/snmptraps:rw \
+-v /var/lib/zabbix/mibs:/usr/share/snmp/mibs:ro \
+-p 162:162/udp \
+-d zabbix/zabbix-snmptraps:latest
+Zabbix snmptrap instance exposes the 162/UDP port (SNMP traps) to host machine.
+3. Start Zabbix server instance and link the instance with created PostgreSQL server instance
+
+# sudo docker run --name zabbix-server-pgsql -t \
+-e DB_SERVER_HOST="postgres-server" \
+-e POSTGRES_USER="zabbix" \
+-e POSTGRES_PASSWORD="zabbix" \
+-e POSTGRES_DB="zabbix_pwd" \
+-e ZBX_ENABLE_SNMP_TRAPS="true" \
+--link postgres-server:postgres \
+-p 10051:10051 \
+--volumes-from zabbix-snmptraps \
+-d zabbix/zabbix-server-pgsql:latest
+Zabbix server instance exposes the 10051/TCP port (Zabbix trapper) to host machine.
+4. Start Zabbix web interface and link the instance with created PostgreSQL server and Zabbix server instances
+
+# sudo docker run --name zabbix-web-nginx-pgsql -t \
+-e DB_SERVER_HOST="postgres-server" \
+-e POSTGRES_USER="zabbix" \
+-e POSTGRES_PASSWORD="zabbix" \
+-e POSTGRES_DB="zabbix_pwd" \
+--link postgres-server:postgres \
+--link zabbix-server-pgsql:zabbix-server \
+-p 80:80 \
+-v /etc/ssl/nginx:/etc/ssl/nginx:ro \
+-d zabbix/zabbix-web-nginx-pgsql:latest
+Zabbix web interface instance exposes the 443/TCP port (HTTPS) to host machine.
+Directory /etc/ssl/nginx must contain certificate with required name.

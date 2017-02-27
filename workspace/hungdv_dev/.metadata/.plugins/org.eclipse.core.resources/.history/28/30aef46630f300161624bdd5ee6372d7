@@ -1,0 +1,6 @@
+package main.bd.sender;
+import java.util.concurrent.atomic.
+
+public interface ISender<T> {
+	private 
+}

@@ -1,0 +1,13 @@
+package bd.paytv.parser;
+import java.util.regex.Pattern;
+
+import main.bd.message.*;
+public class MessageMetricsParser {
+	private String massageEntryPattern;
+	private Pattern pattern;
+	
+	public MessageMetricsParser(String massgaeEntryPattern){
+		this.massageEntryPattern = massgaeEntryPattern;
+		this.pattern = Pattern.compile(this.massgaeEntryPattern);
+	}
+}

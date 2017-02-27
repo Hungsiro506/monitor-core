@@ -1,0 +1,74 @@
+package main;
+import org.apache.commons.cli.*;
+
+import main.bd.message.*;
+import main.bd.queue.*;
+import main.bd.sender.*;
+
+
+
+public class Main {
+	private static String logFilePath = "";
+	private static String serverIP = "";
+	private static int	  serverPort = 0 ;
+	private static String agentName = "";
+	
+	public static void main(String[] args){
+		Main m = new Main();
+		m.test();
+	}
+	
+	private static void parsingArguments(String[] args){
+	
+		Options options  = new Options();
+		
+		Option	logFile	=	new	Option("l","logFile",true,"path to log file");
+		logFile.setRequired(true);
+		options.addOption(logFile);
+		
+		Option	serverIp	=	new	Option("i","serverIp",true,"received server IP");
+		serverIp.setRequired(true);
+		options.addOption(serverIp);
+		
+		Option	Port	=	new	Option("p","Port",true,"received server Port");
+		Port.setRequired(true);
+		options.addOption(Port);
+		
+		Option	hostName	=	new	Option("h","hostName",true,"Hostname - Agent ip");
+		hostName.setRequired(true);
+		options.addOption(hostName);
+		
+		CommandLineParser parser 	=	new GnuParser();
+		HelpFormatter	formatter	=	new	HelpFormatter();
+		CommandLine cmd;
+		
+		try{
+			cmd	=	parser.parse(options, args);
+		}catch(ParseException e){
+			System.out.println(e.getMessage());
+			formatter.printHelp("utility-name", options);
+			System.exit(1);
+			return;
+		}
+		
+		logFilePath		=	cmd.getOptionValue("logFile");
+		serverIP 	=	cmd.getOptionValue("serverIp");
+		serverPort	=	Integer.parseInt(cmd.getOptionValue("Port"));
+		agentName	=	cmd.getOptionValue("hostName");
+	
+	}	
+	private void test(){
+		String[] test = new String[8];
+		test[0] =  "-l";
+		test[1] = "log";
+		test[2]	=	"-i";
+		test[3]	=	"serverIp";
+		test[4]	=	"-p"
+		test[5]	=	"90";
+		test[6]	=	"-h";
+		test[7]	=	"hostName";
+		this.parsingArguments(test);
+		System.out.println(this.serverIP);
+	}
+				
+}

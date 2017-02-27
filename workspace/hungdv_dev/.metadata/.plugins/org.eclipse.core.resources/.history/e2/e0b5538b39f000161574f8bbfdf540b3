@@ -1,0 +1,72 @@
+package sender;
+import parser.LogMessage;
+import parser.Parser;
+
+import java.io.IOException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import io.github.hengyunabc.zabbix.sender.DataObject;
+import io.github.hengyunabc.zabbix.sender.SenderResult;
+import io.github.hengyunabc.zabbix.sender.ZabbixSender;
+import utils.Constants;
+
+
+public class Zabbix_Sender implements Runnable{
+	private String zabbixServerIP;
+	private int port;
+	private Parser parser;
+	private ZabbixSender sender;
+	private String agentIP;
+	private boolean shouldIRun = true;
+	@Override
+	public void run() {
+		try{
+		// TODO Auto-generated method stub
+		while(shouldIRun){
+			
+			int totalError = 0;
+			int totalRead = 0;
+			int totalWrite = 0;
+			LogMessage metrics = parser.pull();
+			if(parser.pull() !=  null) totalError = metrics.getTotalError();
+			if(parser.pull() !=  null) totalRead = metrics.getTotalRead();
+			if(parser.pull() !=  null) totalWrite = metrics.getTotalWrite();
+			
+	        try {
+				SenderResult totalErrorResult = this.send(agentIP, "TotalError",Integer.toString(totalError));
+				System.out.println("result:" + totalErrorResult);
+				SenderResult totalWriteResult = this.send(agentIP, "TotalWrite",Integer.toString(totalWrite));
+				System.out.println("result:" + totalWriteResult);
+				SenderResult errorResult = this.send(agentIP, "TotalRead",Integer.toString(totalRead));
+				System.out.println("result:" + errorResult);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			//should delete message after recieved ack 
+	        
+			
+		}
+		}catch(Exception e){
+			shouldIRun =false;
+		}
+	}
+	public Zabbix_Sender(String host, int port, Parser parser,String agentIP){
+		this.zabbixServerIP = host;
+		this.port = port; 
+		this.parser = parser;
+		this.sender = new ZabbixSender(host,port);
+		this.agentIP = agentIP;
+	}
+	private SenderResult send(String zabbixServer,String key,String value) throws IOException{
+		DataObject totalError_DataObject = new DataObject();
+		totalError_DataObject.setHost(zabbixServer);
+		totalError_DataObject.setKey(key);
+		totalError_DataObject.setValue(value);
+		totalError_DataObject.setClock(System.currentTimeMillis()/1000);
+		SenderResult result = sender.send(totalError_DataObject);
+        return result;
+	}
+
+}

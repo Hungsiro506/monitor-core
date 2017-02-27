@@ -1,0 +1,23 @@
+package main.bd.message;
+
+import java.util.List;
+
+public class Student {
+
+    private String name;
+    private int age;
+    private String skills;
+	public void setName(String string) {
+		// TODO Auto-generated method stub
+		this.name = string;
+		
+	}
+	public void setAge(int age){
+		this.age = age;
+	}
+	public void setSkills(String string){
+		this.skills = string;
+	}
+
+    // getters setters
+}

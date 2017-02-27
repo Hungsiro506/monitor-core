@@ -1,0 +1,46 @@
+package main.bd.queue;
+import java.util.concurrent.ConcurrentLinkedDeque;
+
+import parser.LogMessage;
+public class FtelQueue<T> {
+	//private static LinkedList<T> queue;
+	// Change from LinkedList -> java.util.concurrentLinkedDeque to avoid concurrence issue. 
+	private  ConcurrentLinkedDeque<T> queue;
+	private final int MAXSIZE = 1000;
+	public  FtelQueue()
+	{
+		this.queue = new ConcurrentLinkedDeque<T>();
+	}
+	private void addFirst(T msg){
+		this.queue.addFirst(msg);
+	}
+	private void removeLast(){
+		this.queue.removeLast();
+	}
+	
+	/*
+	 * Add new element to queue (at first), remove last if queue is full.
+	 * By default size of queue  = 1000;
+	 * IT IS CRISTICAL. IF MEASSE PRODUCE FASTER THAN IT COMSUMED, WHERE WILL GET NO MESG AT ALL.
+	 */
+	private void addNewMsg(T msg){
+		if(this.queue.size() == this.MAXSIZE){
+			this.queue.removeLast();
+		}
+		this.queue.addFirst(msg);
+	}
+	//Get last one, and remove it after we got it (if size() > 1)
+	private T getMessage(){
+		 T msg = null;
+		 if(this.queue.size() > 0){
+		 msg = this.queue.getLast();
+		 this.removeLast();
+		 }
+		/* if(this.queue.size() > 1){
+			 this.queue.removeLast();
+		 }*/
+		 
+		 return msg;
+	}
+	
+}

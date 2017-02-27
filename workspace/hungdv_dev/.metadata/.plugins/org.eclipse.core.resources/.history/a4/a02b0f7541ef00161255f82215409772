@@ -1,0 +1,110 @@
+package log_tailer;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.RandomAccessFile;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import parser.Parser;
+
+public class LogTailer implements Runnable {
+	
+	private boolean debug = false;
+	private int 	runEverySeconds = 2000;
+	private long 	lastKnownPosition =0;
+	private boolean shouldIRun = true;
+	private File	logFile = null;
+	private static int counter =0;
+	private Parser parser;
+	
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+		try{
+			while(shouldIRun){
+				Thread.sleep(this.runEverySeconds);
+				long fileLength = logFile.length();
+				if(fileLength > lastKnownPosition){
+					RandomAccessFile readWriteFileAccess = new RandomAccessFile(logFile, "rw");
+					readWriteFileAccess.seek(lastKnownPosition);
+					String line = null;
+					while((line = readWriteFileAccess.readLine()) != null){
+						parser.parserAndPush(line);
+						//printLine(line);
+						counter ++;
+					}
+					lastKnownPosition = readWriteFileAccess.getFilePointer();
+					readWriteFileAccess.close();
+				}
+				else{
+					if(debug)
+						this.printLine("Hmm.. Couldn't found new line after line # " + counter);
+				}
+			}
+		}catch(Exception e){
+			stopRunning();
+		}
+		if (debug)
+			this.printLine("Exit the program...");
+		
+	}
+	private void printLine(String mesg){
+		System.out.println(mesg);
+	}
+	private void stopRunning(){
+		shouldIRun = false;
+	}
+	public LogTailer(String logFile,int interval){
+		this.logFile = new File(logFile);
+		this.runEverySeconds = interval;
+	}
+	
+	
+	public static void main(String argv[]) {
+		 
+		ExecutorService crunchifyExecutor = Executors.newFixedThreadPool(4);
+ 
+		// Replace username with your real value
+		// For windows provide different path like: c:\\temp\\crunchify.log
+		String filePath = "/home/hungdv/Desktop/tailer.txt";
+		LogTailer tailer = new LogTailer(filePath, 2000);
+ 
+		// Start running log file tailer on crunchify.log file
+		crunchifyExecutor.execute(tailer);
+ 
+		// Start pumping data to file crunchify.log file
+		appendData(filePath, true, 5000);
+ 
+	}
+ 
+	/**
+	 * Use appendData method to add new line to file, so above tailer method can print the same in Eclipse Console
+	 * 
+	 * @param filePath
+	 * @param shouldIRun
+	 * @param interval
+	 */
+	private static void appendData(String filePath, boolean shouldIRun, int interval) {
+		FileWriter fileWritter;
+ 
+		try {
+			while (shouldIRun) {
+				Thread.sleep(interval);
+				fileWritter = new FileWriter(filePath, true);
+				BufferedWriter bufferWritter = new BufferedWriter(fileWritter);
+ 
+				String data = "\nCrunchify.log file content: " + Math.random();
+				bufferWritter.write(data);
+				bufferWritter.close();
+			}
+ 
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+ 
+	}
+	
+	
+	
+}

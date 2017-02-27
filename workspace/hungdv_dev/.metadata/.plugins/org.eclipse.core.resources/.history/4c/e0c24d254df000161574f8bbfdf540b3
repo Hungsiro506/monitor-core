@@ -1,0 +1,128 @@
+package log_tailer;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.RandomAccessFile;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import parser.Parser;
+import sender.Zabbix_Sender;
+
+public class LogTailer implements Runnable {
+	
+	private boolean debug = false;
+	private int 	runEverySeconds = 2000;
+	private long 	lastKnownPosition =0;
+	private boolean shouldIRun = true;
+	private File	logFile = null;
+	private static int counter =0;
+	// Shared variable betweem producer and consumer.
+	// Very critical, may be cause of confict and deathlock.
+	// Need to sync and locking this variable. 
+	private Parser parser;
+	
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+		try{
+			while(shouldIRun){
+				Thread.sleep(this.runEverySeconds);
+				long fileLength = logFile.length();
+				if(fileLength > lastKnownPosition){
+					RandomAccessFile readWriteFileAccess = new RandomAccessFile(logFile, "rw");
+					readWriteFileAccess.seek(lastKnownPosition);
+					String line = null;
+					while((line = readWriteFileAccess.readLine()) != null){
+						parser.parserAndPush(line);
+						//printLine(line);
+						counter ++;
+					}
+					lastKnownPosition = readWriteFileAccess.getFilePointer();
+					readWriteFileAccess.close();
+				}
+				else{
+					if(debug)
+						this.printLine("Hmm.. Couldn't found new line after line # " + counter);
+				}
+			}
+		}catch(Exception e){
+			stopRunning();
+		}
+		if (debug)
+			this.printLine("Exit the program...");
+		
+	}
+	private void printLine(String mesg){
+		System.out.println(mesg);
+	}
+	private void stopRunning(){
+		shouldIRun = false;
+	}
+	public LogTailer(String logFile,int interval, Parser parser){
+		this.logFile = new File(logFile);
+		this.runEverySeconds = interval;
+		this.parser = parser;
+		// Skip all existing line .
+		this.lastKnownPosition = this.logFile.length();
+	}
+	
+	
+	public static void main(String argv[]) {
+		 
+		ExecutorService executor = Executors.newFixedThreadPool(4);
+		ExecutorService executor2 = Executors.newFixedThreadPool(4);
+		Parser parser = new Parser();
+		// Replace username with your real value
+		// For windows provide different path like: c:\\temp\\crunchify.log
+		String filePath = "/home/hungdv/Desktop/tailer.txt";
+		LogTailer tailer = new LogTailer(filePath, 2000,parser);
+		
+		//String zabbixDockerIP = "172.17.0.1";
+		String zabbixDockerIP = "127.0.0.1";
+		int zabbixDockerPort = 10051;
+		Zabbix_Sender sender = new Zabbix_Sender(zabbixDockerIP,zabbixDockerPort,parser,"172.17.0.1");
+		
+
+		// Start running log file tailer on crunchify.log file
+		executor.execute(tailer);
+		executor2.execute(sender);
+			
+		// Start pumping data to file crunchify.log file
+		appendData(filePath, true,2000);
+		executor.shutdown();
+		executor2.shutdown();
+	}
+ 
+	/**TESTING PURPOSE
+	 * Use appendData method to add new line to file, so above tailer method can print the same in Eclipse Console
+	 * 
+	 * @param filePath
+	 * @param shouldIRun
+	 * @param interval
+	 */
+	private static void appendData(String filePath, boolean shouldIRun, int interval) {
+		FileWriter fileWritter;
+ 
+		try {
+			while (shouldIRun) {
+				Thread.sleep(interval);
+				fileWritter = new FileWriter(filePath, true);
+				BufferedWriter bufferWritter = new BufferedWriter(fileWritter);
+ 
+				//String data = "\nCrunchify.log file content: " + Math.random();
+				String data = "[INFO] main InfoLog 09 Feb 2017 09:52:24 - Done parse /data/fbox/logs/2017/02/09/09/fbox_9.txt | total: 151325 | print: 145448 | time: 20585 | at: 1486608744014\n";
+				
+				bufferWritter.write(data);
+				bufferWritter.close();
+			}
+ 
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+ 
+	}
+	
+	
+	
+}

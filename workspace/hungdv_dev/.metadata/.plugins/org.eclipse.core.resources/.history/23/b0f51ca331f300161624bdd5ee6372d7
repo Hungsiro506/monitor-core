@@ -1,0 +1,10 @@
+package main.bd.sender;
+import java.util.concurrent.ConcurrentLinkedDeque;
+
+import main.bd.queue.FtelQueue;
+
+
+public interface ISender<T> {
+	public static FtelQueue<T> queue;
+	
+}

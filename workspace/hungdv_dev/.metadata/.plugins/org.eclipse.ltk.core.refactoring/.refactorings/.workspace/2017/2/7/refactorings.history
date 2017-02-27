@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Delete resource &apos;paytv-service-monitor&apos;" deleteContents="false" description="Delete resource &apos;paytv-service-monitor&apos;" element1="/paytv-service-monitor" flags="7" id="org.eclipse.ltk.core.refactoring.delete.resources" resources="1" stamp="1487329605969"/>
+</session>

@@ -1,0 +1,12 @@
+package main.bd.sender;
+
+public class SenderFactory {
+	public ISender getSender(String senderType){
+		if(shapeType == null){
+	         return null;
+	      }		
+	      if(shapeType.equalsIgnoreCase("ZABBIX")){
+	         return new Circle();
+	}
+
+}

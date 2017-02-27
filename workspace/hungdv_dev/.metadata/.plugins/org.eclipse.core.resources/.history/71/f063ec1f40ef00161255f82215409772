@@ -1,0 +1,61 @@
+package log_tailer;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.RandomAccessFile;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import parser.Parser;
+
+public class LogTailer implements Runnable {
+	
+	private boolean debug = false;
+	private int 	runEverySeconds = 2000;
+	private long 	lastKnownPosition =0;
+	private boolean shouldIRun = true;
+	private File	logFile = null;
+	private static int counter =0;
+	private Parser parser;
+	
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+		try{
+			while(shouldIRun){
+				Thread.sleep(this.runEverySeconds);
+				long fileLength = logFile.length();
+				if(fileLength > lastKnownPosition){
+					RandomAccessFile readWriteFileAccess = new RandomAccessFile(logFile, "rw");
+					readWriteFileAccess.seek(lastKnownPosition);
+					String line = null;
+					while((line = readWriteFileAccess.readLine()) != null){
+						parser.parserAndPush(line);
+						counter ++;
+					}
+					lastKnownPosition = readWriteFileAccess.getFilePointer();
+					readWriteFileAccess.close();
+				}
+				else{
+					if(debug)
+						this.printLine("Hmm.. Couldn't found new line after line # " + counter);
+				}
+			}
+		}catch(Exception e){
+			stopRunning();
+		}
+		
+	}
+	private void printLine(String mesg){
+		
+	}
+	private void stopRunning(){
+		shouldIRun = false;
+	}
+	public LogTailer(String logFile,int interval){
+		this.logFile = new File(logFile);
+		this.runEverySeconds = interval;
+	}
+	
+	
+}

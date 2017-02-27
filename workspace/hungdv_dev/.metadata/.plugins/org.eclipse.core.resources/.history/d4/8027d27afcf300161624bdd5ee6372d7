@@ -1,0 +1,12 @@
+package main.bd.message;
+import java.util.HashMap;
+
+public class MetricsMessage {
+	private HashMap<String,String> metrics = null;
+	public MetricsMessage(HashMap<String,String> metrics){
+		this.metrics = metrics;
+	}
+	public HashMap<String,String> getMetrics(){
+		return this.metrics;
+	}
+}

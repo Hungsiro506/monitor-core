@@ -1,0 +1,5 @@
+package main.bd.queue;
+
+public class AbtractQueue {
+
+}

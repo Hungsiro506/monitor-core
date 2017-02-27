@@ -1,0 +1,8 @@
+package main.bd.queue;
+import java.util.concurrent.ConcurrentLinkedDeque;
+public class FtelQueue<T> {
+	//private static LinkedList<T> queue;
+	// Change from LinkedList -> java.util.concurrentLinkedDeque to avoid concurrence issue. 
+	private ConcurrentLinkedDeque<T> queue;
+	
+}

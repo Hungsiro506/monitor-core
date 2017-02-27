@@ -1,0 +1,37 @@
+{
+"LOG4J_CONFIG_DIR" : "/build/payTV/config/log4j"
+,"SERVICE_MONITOR_DIR" : "/build/payTV/service/monitor"
+,"HDFS_CORE_SITE" : "/opt/hadoop/etc/hadoop/core-site.xml"
+,"HDFS_SITE" : "/opt/hadoop/etc/hadoop/hdfs-site.xml"
+
+,"MAIN_DIR" : "/build/payTV"
+,"RAW_LOG_DIR" : "/data/fbox/logs"
+,"PARSED_LOG_HDFS_DIR" : "/data/payTV/log_parsed"
+,"SUPPORT_DATA_DIR" : "/build/payTV/support_data"
+
+,"USER_SPECIAL_FILE" : "/build/payTV/support_data/paytv_get_dm_nv_vip"
+,"USER_CANCEL_FILE" : "/build/payTV/support_data/paytv_user_cancel"
+,"USER_INFO_FIRST_LOAD_FILE" : "/build/payTV/support_data/totalUser_3009.csv"
+,"USER_INFO_UPDATE_POP_FILE" : "/build/payTV/support_data/addon_pop.csv"
+,"USER_INFO_UPDATE_ISC_FILE" : "/build/payTV/support_data/addon_isc.csv"
+,"LOCATION_MAPPING" : "/build/payTV/support_data/location.csv"
+,"CALL_LOG_PURPOSE_FILE" : "/build/payTV/support_data/call_log_purpose.json"
+
+,"DELAY_ALLOW_RTP" : "2"
+,"RTP_MAX" : "3"
+,"SMM_MAX" : "12"
+,"GET_USER_CHURN_API" : "https://fbox-partners.fpt.vn/rad?method=GetUserCancel&date="
+,"GET_USER_REGISTER_API" : "https://fbox-partners.fpt.vn/rad?method=GetUserRegis&date="
+
+,"POSTGRESQL_PAYTV_HOST" : "172.31.8.9"
+,"POSTGRESQL_PAYTV_PORT" : "5432"
+,"POSTGRESQL_PAYTV_DATABASE" : "pay_tv"
+,"POSTGRESQL_PAYTV_USER" : "pay_tv"
+,"POSTGRESQL_PAYTV_USER_PASSWORD" : "hamaxauxi"
+
+,"POSTGRESQL_PAYTV_TABLE_NOW_TIMETOLIVE" : "3"
+,"POSTGRESQL_PAYTV_TABLE_DAILY_TIMETOLIVE" : "71"
+,"POSTGRESQL_PAYTV_TABLE_PROFILE_WEEK_TIMETOLIVE" : "365"
+,"POSTGRESQL_PAYTV_TABLE_PROFILE_MONTH_TIMETOLIVE" : "800"
+}
+

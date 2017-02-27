@@ -1,0 +1,25 @@
+
+import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class Main {
+	
+	public static int numberGroups = 7;
+	public static void main(String[] args){
+		String sampleLog = "AGFD01616	+Ho tro ky thuat	2016/12/01 08:20:46.000000000	387	AGFD01616, a.Toan 0989211447, k ipw, k truy cap dc net, k dong y thao tac, nho ktv care giup (RAD)	Inbound	An Giang";
+		String regex = "([^ ]*)	([^ ]*)	([^ ]*)	([^ ]*)	([^ ]*)	([^ ]*)	([^ ]*)";
+		Pattern pattern = Pattern.compile(regex);
+		Matcher matcher = pattern.matcher(sampleLog);
+		ArrayList<String> groups = new ArrayList<String>();
+		if( matcher.matches() && matcher.groupCount() == numberGroups){
+			for(int i = 1; i <= numberGroups; i++){
+				String value = matcher.group(i);
+				groups.add(value);
+			}
+		}
+		for(int i = 0; i < groups.size();i++){
+			System.out.println(groups.get(i));
+		}
+	}
+}

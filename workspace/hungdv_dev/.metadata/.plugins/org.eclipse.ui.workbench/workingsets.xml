@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workingSetManager>
+<workingSet editPageId="org.eclipse.ui.resourceWorkingSetPage" factoryID="org.eclipse.ui.internal.WorkingSetFactory" id="1486438181329_0" label="paytv" name="paytv">
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/paytv-service-usage" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/paytv-core-db" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/paytv-mapreduce" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/paytv-service-addon" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/paytv-core-utils" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/paytv-service-parselog" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/paytv-extra" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/payTV-java" type="4"/>
+</workingSet>
+<workingSet aggregate="true" factoryID="org.eclipse.ui.internal.WorkingSetFactory" id="1486549183062_1" label="Window Working Set" name="Aggregate for window 1486549183061"/>
+<mruList name="paytv"/>
+</workingSetManager>

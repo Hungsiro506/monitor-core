@@ -1,0 +1,10 @@
+main/bd/sender/SenderRequest.class
+main/bd/sender/ZabbixSenderImpl.class
+main/bd/sender/ZabbixSender.class
+main/bd/sender/DataObject.class
+main/bd/sender/SenderFactory.class
+main/bd/queue/FtelQueue.class
+main/bd/message/MetricsMessage.class
+main/bd/sender/SenderResult.class
+main/bd/sender/ISender.class
+main/bd/sender/DataObject$Builder.class

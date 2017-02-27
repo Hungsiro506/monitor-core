@@ -1,0 +1,67 @@
+package bd.paytv.parser;
+import main.bd.message.MetricsMessage;
+import main.bd.queue.*;
+import bd.paytv.utils.*;
+import	bd.paytv.utils.*;
+
+public class Parser	{
+	private	FtelQueue<MetricsMessage>	queue;
+	/**
+	 * Parser Class
+	 * @param none. 
+	 */
+	public	Parser()	{
+		this.queue	=	new	FtelQueue<MetricsMessage>();
+	}
+	public Parser(FtelQueue<MetricsMessage> queue){
+		this.queue	=	queue;
+	}
+	/**
+	 * Parser log line to MetricsMessage. 
+	 * parser a line to metrics object
+	 * @input : String - a line of logs
+	 * @return : LogMessage - Metrics Object.  
+	 */
+	public	MetricsMessage	parse(String logLine){
+		String logRegex =	Constants.PAYTV_SERVICE_INFO_LOG_REGEX;
+		String msgRegex =	Constants.PAYTV_SERVICE_INFO_MESSAGE_LOG_REGEX;
+		int grouptCount	=	Constants.PAYTV_SERVICE_INFO_LOG_REGEX_GROUPS_COUNT;
+		
+		LogLineParser	logParser			=	new	LogLineParser(logRegex,grouptCount);
+		MessageMetricsParser	msgParser	=	new	MessageMetricsParser(msgRegex);
+		MetricsMessage	metricsMsg 			=	msgParser.getMetricsMessage(logParser.getLogMeassage(logLine));
+		return metricsMsg;
+	}
+	public boolean parsealbe(String logLine){
+		String logRegex =	Constants.PAYTV_SERVICE_INFO_LOG_REGEX;
+		String msgRegex =	Constants.PAYTV_SERVICE_INFO_MESSAGE_LOG_REGEX;
+		int grouptCount	=	Constants.PAYTV_SERVICE_INFO_LOG_REGEX_GROUPS_COUNT;
+		LogLineParser	logParser			=	new	LogLineParser(logRegex,grouptCount);
+		if (logParser.parseable(logLine)){
+			MessageMetricsParser	msgParser	=	new	MessageMetricsParser(msgRegex);
+			String msg = logParser.getLogMeassage(logLine);
+			return msgParser.parseable(msg);
+		}
+		return false;
+		
+		
+	}
+	/**
+	 * combine parse() then push parsed metrics to queue
+	 * @param logLine : Input string log line.
+	 */
+	public	void	parserAndPush(String logLine){
+		this.queue.push(this.parse(logLine));
+	}
+	/**
+	 * TESTING PUPOSE.
+	 * @param args
+	 */
+	public static void main(String[] args){
+		String logEx = "[INFO] main InfoLog 09 Feb 2017 09:52:24 - Done parse /data/fbox/logs/2017/02/09/09/fbox_9.txt | total: 151325 | print: 145448 | time: 20585 | at: 1486608744014";
+		Parser parser = new Parser();
+		parser.parserAndPush(logEx);
+		System.out.println(parser.queue.pull().getMetrics());
+		System.out.println("Shit done!");
+	}
+}

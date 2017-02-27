@@ -1,0 +1,38 @@
+package main;
+import org.apache.commons.cli.*;
+
+import main.bd.message.*;
+import main.bd.queue.*;
+import main.bd.sender.*;
+
+
+
+public class Main {
+	private static String logFilePath;
+	private static String serverIP;
+	private static int	  serverPort;
+	private static String hostName;
+	
+	public static void main(String[] args){
+		
+	}
+	
+	private static void parsingArguments(String[] args){
+	
+		Options options  = new Options();
+		
+		Option	logfile	=	new	Option("l","logfile",true,"path to log file");
+		logfile.setRequired(true);
+		options.addOption(logfile);
+		
+		Option	serverIP	=	new	Option("i","server-ip",true,"received server IP");
+		serverIP.setRequired(true);
+		options.addOption(serverIP);
+		
+		Option	serverPort	=	new	Option("")
+	
+		
+		
+	}	
+				
+}

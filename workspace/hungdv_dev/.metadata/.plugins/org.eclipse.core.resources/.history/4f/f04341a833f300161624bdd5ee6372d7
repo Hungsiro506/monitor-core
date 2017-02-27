@@ -1,0 +1,5 @@
+package main.bd.sender;
+
+public class DataObject {
+
+}

@@ -1,0 +1,7 @@
+package main.bd.message;
+import java.util.HashMap;
+
+public class BaseMessage {
+	private HashMap<String,String> metrics;
+	
+}

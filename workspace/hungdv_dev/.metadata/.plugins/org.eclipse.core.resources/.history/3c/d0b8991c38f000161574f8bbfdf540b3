@@ -1,0 +1,70 @@
+package sender;
+import parser.LogMessage;
+import parser.Parser;
+
+import java.io.IOException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import io.github.hengyunabc.zabbix.sender.DataObject;
+import io.github.hengyunabc.zabbix.sender.SenderResult;
+import io.github.hengyunabc.zabbix.sender.ZabbixSender;
+import utils.Constants;
+
+
+public class Zabbix_Sender implements Runnable{
+	private String zabbixServerIP;
+	private int port;
+	private Parser parser;
+	private ZabbixSender sender;
+	private String agentIP;
+	private boolean shouldIRun = true;
+	@Override
+	public void run() {
+		try{
+		// TODO Auto-generated method stub
+		while(shouldIRun){
+			
+			int totalError = 0;
+			int totalRead = 0;
+			int totalWrite = 0;
+			LogMessage metrics = parser.pull();
+			if(parser.pull() !=  null) totalError = metrics.getTotalError();
+			if(parser.pull() !=  null) totalRead = metrics.getTotalRead();
+			if(parser.pull() !=  null) totalWrite = metrics.getTotalWrite()();
+			
+			DataObject totalError_DataObject = new DataObject();
+			totalError_DataObject.setHost(this.agentIP);
+			totalError_DataObject.setKey("TotalError");
+			totalError_DataObject.setValue(Integer.toString(totalError));
+			totalError_DataObject.setClock(System.currentTimeMillis()/1000);
+			System.out.println(totalError_DataObject.getValue());
+	        try {
+				SenderResult result = sender.send(totalError_DataObject);
+				System.out.println("result:" + result);
+		        if (result.success()) {
+		            System.out.println("send success.");
+		        } else {
+		            System.err.println("send fail!");
+		        }
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			//should delete message after recieved ack 
+	        
+			
+		}
+		}catch(Exception e){
+			shouldIRun =false;
+		}
+	}
+	public Zabbix_Sender(String host, int port, Parser parser,String agentIP){
+		this.zabbixServerIP = host;
+		this.port = port; 
+		this.parser = parser;
+		this.sender = new ZabbixSender(host,port);
+		this.agentIP = agentIP;
+	}
+
+}

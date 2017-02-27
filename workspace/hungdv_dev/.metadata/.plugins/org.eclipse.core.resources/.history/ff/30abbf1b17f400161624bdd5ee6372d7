@@ -1,0 +1,17 @@
+package main.bd.sender;
+
+public class SenderFactory<T> {
+	public ISender<T> getSender(String senderType,String receivedServerIP,int receivedServerPort,String senderAgentIP){
+		if(senderType == null){
+	         return null;
+	      }		
+	    if(senderType.equalsIgnoreCase("ZABBIX")){
+	         return new ZabbixSenderImpl<T>();
+	    }
+	    return null;   
+	    
+	    /**
+	     * Add others sender here!...
+	     */
+	}
+}
