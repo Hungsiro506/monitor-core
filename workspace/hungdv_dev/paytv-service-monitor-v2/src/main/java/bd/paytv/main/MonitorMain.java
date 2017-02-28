@@ -49,9 +49,10 @@ public class MonitorMain
 /*	  	ExecutorService executorKeeper	=	Executors.newFixedThreadPool(1);
 	  	ExecutorService executorTailer	=	Executors.newFixedThreadPool(4);
 		ExecutorService executorSender	=	Executors.newFixedThreadPool(4);*/
-	  	ExecutorService executorKeeper	=	Executors.newSingleThreadExecutor();
+	  	/*ExecutorService executorKeeper	=	Executors.newSingleThreadExecutor();
 	  	ExecutorService executorTailer	=	Executors.newSingleThreadExecutor();
-		ExecutorService executorSender	=	Executors.newSingleThreadExecutor();
+		ExecutorService executorSender	=	Executors.newSingleThreadExecutor();*/
+	  	ExecutorService executor 		= 	Executors.newFixedThreadPool(3);
 		
 		FtelQueue<MetricsMessage> queue	=	new FtelQueue<MetricsMessage>();
 		FtelQueue<MetricsMessage> immutableQueue	=	new FtelQueue<MetricsMessage>();
@@ -64,17 +65,22 @@ public class MonitorMain
 			ZabbixKeeper keeper = new ZabbixKeeper(immutableQueue,senderForKeeper, serverIP, serverPort, agentName);
 			//Zabbix_Sender sender = new Zabbix_Sender(zabbixDockerIP,zabbixDockerPort,parser,"172.17.0.1");
 			// Start running log file tailer on crunchify.log file
-			executorKeeper.execute(keeper);
+			/*executorKeeper.execute(keeper);
 			executorTailer.execute(tailer);
-			executorSender.execute(sender);
+			executorSender.execute(sender);*/
 			//executorKeeper.execute(keeper);
+			executor.execute(tailer);
+			executor.execute(sender);
+			executor.execute(keeper);
 			//LogTailer.appendData("/data/user/hungvd8/monitor/tailer.txt", true,2000);
 		  }catch(Exception ex){
 			  ex.printStackTrace();
 		  }finally{
-				executorTailer.shutdown();
+				/*executorTailer.shutdown();
 				executorSender.shutdown();
-				executorKeeper.shutdown();
+				executorKeeper.shutdown();*/
+			  	executor.shutdown();
+			  	System.out.println("Deamon thread can not establised at " + System.currentTimeMillis());
 		  }
     // Byte code:
     //   0: aload_0

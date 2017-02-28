@@ -7,7 +7,7 @@ import  java.util.Set;
 
 import    main.bd.message.MetricsMessage;
 import    main.bd.queue.FtelQueue;
-import  main.bd.sender.DataObject;
+import    main.bd.sender.DataObject;
 import    main.bd.sender.ISender;
 import    main.bd.sender.SenderFactory;
 /**
@@ -77,7 +77,7 @@ public    class    ZabbixKeeper    extends    Keeper<MetricsMessage>    implemen
 			}
 			try{
 				Thread.sleep(1000);
-			}catch(Exception  ex){
+			}catch(InterruptedException  ex){
 				ex.printStackTrace();
 				}
 		}

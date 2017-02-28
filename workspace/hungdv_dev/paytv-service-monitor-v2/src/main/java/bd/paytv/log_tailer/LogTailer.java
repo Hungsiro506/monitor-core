@@ -17,7 +17,7 @@ import main.bd.queue.FtelQueue;
 
 public class LogTailer implements Runnable {
 	
-	private boolean debug = true;
+	private boolean debug = false;
 	private int 	runEverySeconds = 2000;
 	private long 	lastKnownPosition =0;
 	private boolean shouldIRun = true;
