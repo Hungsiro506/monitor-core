@@ -18,6 +18,7 @@ import main.bd.message.MetricsMessage;
 import main.bd.queue.FtelQueue;
 import main.bd.sender.ISender;
 import main.bd.sender.SenderFactory;
+import bd.paytv.keeper.ZabbixKeeper;
 import bd.paytv.log_tailer.*;
 
 
@@ -39,27 +40,41 @@ public class MonitorMain
 	  	ExecutorService ex = Executors.newFixedThreadPool(1);
 	  	ex.execute(test);
 	  	*/
-	  
+		 /* logFilePath = "./info.log";
+		  serverIP = "127.0.0.1";
+		  serverPort = 10051;
+		  agentName = "172.17.0.1";*/
 	  	parsingArguments(args);
 	  	System.out.println("Can't take my eyes off you! ");
+/*	  	ExecutorService executorKeeper	=	Executors.newFixedThreadPool(1);
 	  	ExecutorService executorTailer	=	Executors.newFixedThreadPool(4);
-		ExecutorService executorSender	=	Executors.newFixedThreadPool(4);
+		ExecutorService executorSender	=	Executors.newFixedThreadPool(4);*/
+	  	ExecutorService executorKeeper	=	Executors.newSingleThreadExecutor();
+	  	ExecutorService executorTailer	=	Executors.newSingleThreadExecutor();
+		ExecutorService executorSender	=	Executors.newSingleThreadExecutor();
+		
 		FtelQueue<MetricsMessage> queue	=	new FtelQueue<MetricsMessage>();
+		FtelQueue<MetricsMessage> immutableQueue	=	new FtelQueue<MetricsMessage>();
 		try{
-			Parser parser	=	new Parser(queue);
+			Parser parser	=	new Parser(queue,immutableQueue);
 			LogTailer tailer	=	new LogTailer(logFilePath, 2000,parser);
 			SenderFactory<MetricsMessage> senderFactory	=	new SenderFactory<MetricsMessage>();
 			ISender<MetricsMessage> sender	=	senderFactory.getSender("ZABBIX", serverIP, serverPort, queue, agentName);
+			ISender<MetricsMessage> senderForKeeper	=	senderFactory.getSender("ZABBIX", serverIP, serverPort, immutableQueue, agentName);
+			ZabbixKeeper keeper = new ZabbixKeeper(immutableQueue,senderForKeeper, serverIP, serverPort, agentName);
 			//Zabbix_Sender sender = new Zabbix_Sender(zabbixDockerIP,zabbixDockerPort,parser,"172.17.0.1");
 			// Start running log file tailer on crunchify.log file
+			executorKeeper.execute(keeper);
 			executorTailer.execute(tailer);
 			executorSender.execute(sender);
+			//executorKeeper.execute(keeper);
 			//LogTailer.appendData("/data/user/hungvd8/monitor/tailer.txt", true,2000);
 		  }catch(Exception ex){
 			  ex.printStackTrace();
 		  }finally{
 				executorTailer.shutdown();
 				executorSender.shutdown();
+				executorKeeper.shutdown();
 		  }
     // Byte code:
     //   0: aload_0

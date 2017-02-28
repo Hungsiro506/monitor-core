@@ -17,7 +17,7 @@ import main.bd.queue.FtelQueue;
 
 public class LogTailer implements Runnable {
 	
-	private boolean debug = false;
+	private boolean debug = true;
 	private int 	runEverySeconds = 2000;
 	private long 	lastKnownPosition =0;
 	private boolean shouldIRun = true;
@@ -77,7 +77,7 @@ public class LogTailer implements Runnable {
 			while(shouldIRun){
 				Thread.sleep(this.runEverySeconds);
 				long fileLength = logFile.length();
-				printDebug("File length " + fileLength);
+				//printDebug("File length " + fileLength);
 				if(fileLength > lastKnownPosition){
 					RandomAccessFile readWriteFileAccess = new RandomAccessFile(logFile, "r");
 					//RandomAccessFile readWriteFileAccess = new RandomAccessFile(logFile, "rw");
@@ -89,14 +89,14 @@ public class LogTailer implements Runnable {
 						if(parser.parsealbe(line)){
 							parser.parserAndPush(line);
 							counter ++;
-							printDebug("Counter : " + counter);
+							//printDebug("Counter : " + counter);
 						}
 						//printLine(line);
 					}
-					System.out.println("DEBUG : FILE POINTER + " + readWriteFileAccess.getFilePointer());
+					//System.out.println("DEBUG : FILE POINTER + " + readWriteFileAccess.getFilePointer());
 					lastKnownPosition = readWriteFileAccess.getFilePointer();
-					System.out.println("DEBUG : New last know position " + this.lastKnownPosition);
-					System.out.println("DEBUG : End of while !");
+					//System.out.println("DEBUG : New last know position " + this.lastKnownPosition);
+					//System.out.println("DEBUG : End of while !");
 					readWriteFileAccess.close();
 				}
 				else{
@@ -104,11 +104,15 @@ public class LogTailer implements Runnable {
 						this.printLine("Hmm.. Couldn't found new line after line # " + counter);
 				}
 			}
-		}catch(Exception e){
+		}catch(Throwable e){
 			stopRunning();
-		}
+			System.out.print(e.toString());
+		}finally{
 		if (debug)
-			this.printLine("Exit the program...");
+			this.printLine("Tailer thread has down ! Exit the program...");
+			System.out.println("Tailer fail down " + System.currentTimeMillis()) ;
+		
+		}
 		
 	}
 	private static void printDebug(String msg){

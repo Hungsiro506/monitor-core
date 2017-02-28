@@ -5,16 +5,19 @@ import bd.paytv.utils.*;
 import	bd.paytv.utils.*;
 
 public class Parser	{
-	private	FtelQueue<MetricsMessage>	queue;
+	private	FtelQueue<MetricsMessage>	FILOQueueForSender;
+	private FtelQueue<MetricsMessage>	FIFOQueueForKeeper;
 	/**
 	 * Parser Class
 	 * @param none. 
 	 */
 	public	Parser()	{
-		this.queue	=	new	FtelQueue<MetricsMessage>();
+		this.FILOQueueForSender	=	new	FtelQueue<MetricsMessage>();
+		this.FIFOQueueForKeeper = new FtelQueue<MetricsMessage>();
 	}
-	public Parser(FtelQueue<MetricsMessage> queue){
-		this.queue	=	queue;
+	public Parser(FtelQueue<MetricsMessage> queue,FtelQueue<MetricsMessage> immutableQueue){
+		this.FILOQueueForSender	=	queue;
+		this.FIFOQueueForKeeper = immutableQueue;
 	}
 	/**
 	 * Parser log line to MetricsMessage. 
@@ -34,6 +37,8 @@ public class Parser	{
 	}
 	/*
 	 * DUPLICATE CODE. -> propeties
+	 * Kiem tra xem logline co parse duoc ko. 
+	 * Cho nay can merge vao luon voi code parse. 
 	 */
 	public boolean parsealbe(String logLine){
 		String logRegex =	Constants.PAYTV_SERVICE_INFO_LOG_REGEX;
@@ -52,7 +57,8 @@ public class Parser	{
 	 * @param logLine : Input string log line.
 	 */
 	public	void	parserAndPush(String logLine){
-		this.queue.push(this.parse(logLine));
+		this.FILOQueueForSender.push(this.parse(logLine));
+		this.FIFOQueueForKeeper.push(this.parse(logLine));
 	}
 	/**
 	 * TESTING PUPOSE.
@@ -62,7 +68,7 @@ public class Parser	{
 		String logEx = "[INFO] main InfoLog 09 Feb 2017 09:52:24 - Done parse /data/fbox/logs/2017/02/09/09/fbox_9.txt | total: 151325 | print: 145448 | time: 20585 | at: 1486608744014";
 		Parser parser = new Parser();
 		parser.parserAndPush(logEx);
-		System.out.println(parser.queue.pull().getMetrics());
+		System.out.println(parser.FILOQueueForSender.pull().getMetrics());
 		System.out.println("Shit done!");
 	}
 }
