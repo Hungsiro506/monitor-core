@@ -4,8 +4,10 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.RandomAccessFile;
+import java.util.Calendar;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
 import bd.paytv.parser.Parser;
 import main.bd.sender.ISender;
 import main.bd.sender.SenderFactory;
@@ -13,6 +15,8 @@ import main.bd.sender.ZabbixSender;
 import main.bd.sender.ZabbixSenderImpl;
 import main.bd.message.*;
 import main.bd.queue.FtelQueue;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class LogTailer implements Runnable {
@@ -23,6 +27,7 @@ public class LogTailer implements Runnable {
 	private boolean shouldIRun = true;
 	private File	logFile = null;
 	private static int counter =0;
+	private final Logger LOGGER = LoggerFactory.getLogger(LogTailer.class);
 	
 	/**	Shared variable betweem producer and consumer.
 	 Very critical, may be cause of confict and deathlock.
@@ -79,17 +84,24 @@ public class LogTailer implements Runnable {
 				long fileLength = logFile.length();
 				//printDebug("File length " + fileLength);
 				if(fileLength > lastKnownPosition){
+					LOGGER.info(" - [TAILER] Current file length : " + fileLength + " and lastKnowPosition : " + lastKnownPosition);
 					RandomAccessFile readWriteFileAccess = new RandomAccessFile(logFile, "r");
 					//RandomAccessFile readWriteFileAccess = new RandomAccessFile(logFile, "rw");
 					readWriteFileAccess.seek(lastKnownPosition);
 					String line = null;
 					while((line = readWriteFileAccess.readLine()) != null){
-						printDebug("Line " + line);
+						//printDebug("Line " + line);
+						LOGGER.info(" - [TAILER] LINE " + line);
 						//Check parsable
-						if(parser.parsealbe(line)){
-							parser.parserAndPush(line);
-							counter ++;
-							//printDebug("Counter : " + counter);
+						try{
+							if(parser.parsealbe(line)){
+								parser.parserAndPush(line);
+								counter ++;
+								//printDebug("Counter : " + counter);
+								LOGGER.info(" - [TAILER] COUNTER " + counter);
+							}
+						}catch(Throwable e){
+							LOGGER.warn(" - [TAILER] has problem with parse or push to queue " + e.getMessage());
 						}
 						//printLine(line);
 					}
@@ -99,18 +111,24 @@ public class LogTailer implements Runnable {
 					//System.out.println("DEBUG : End of while !");
 					readWriteFileAccess.close();
 				}
-				else{
+				else if(fileLength < lastKnownPosition){
+					LOGGER.info(" [TAILER] file length less than last know position -> Midnight !. reset Lastknowposition.");
+					this.lastKnownPosition = fileLength;
+				}
+				else {
 					if(debug)
 						this.printLine("Hmm.. Couldn't found new line after line # " + counter);
 				}
 			}
 		}catch(Throwable e){
-			stopRunning();
+			LOGGER.warn(" - [TAILER] Exception in run() " + e.getMessage());
 			System.out.print(e.toString());
 		}finally{
 		if (debug)
 			this.printLine("Tailer thread has down ! Exit the program...");
 			System.out.println("Tailer fail down " + System.currentTimeMillis()) ;
+			stopRunning();
+			LOGGER.error(" - [TAILER ] tailer has fail down !");
 		
 		}
 		

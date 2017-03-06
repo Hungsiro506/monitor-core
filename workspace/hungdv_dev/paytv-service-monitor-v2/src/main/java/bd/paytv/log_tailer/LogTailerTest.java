@@ -43,11 +43,14 @@ public class LogTailerTest implements Runnable {
 						this.printLine("Hmm.. Couldn't found new line after line # " + counter);
 				}
 			}
-		}catch(Exception e){
+		}
+		catch(Exception e){
+			
+		}finally{
+			if (debug)
+				this.printLine("Exit the program...");
 			stopRunning();
 		}
-		if (debug)
-			this.printLine("Exit the program...");
 	}
 	private void printLine(String mesg){
 		System.out.println(mesg);

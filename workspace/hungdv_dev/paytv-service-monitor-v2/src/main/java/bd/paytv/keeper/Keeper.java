@@ -115,10 +115,14 @@ import  java.util.TimerTask;
 	}*/
 	protected boolean hasNewLogInQueue(){
 		int queueOffSet  = this.getQueueOffSet();
-		if(this.lastKnowQueueOffSet < queueOffSet && this.lastKnowQueueOffSet != 1000){
+		/*
+			lastKnowQueue off set < current queue offset
+			incase the queue is full (MAXSIZE == 1000) -> it may lead to lastKnowOffSet == QueueOffSet == 1000
+		 */
+		if(this.lastKnowQueueOffSet < queueOffSet || (this.lastKnowQueueOffSet == 1000 && queueOffSet == 1000) ){
 			this.lastKnowQueueOffSet++;
 			return true;
-		}
+		}	
 		return false;
 	}
 	

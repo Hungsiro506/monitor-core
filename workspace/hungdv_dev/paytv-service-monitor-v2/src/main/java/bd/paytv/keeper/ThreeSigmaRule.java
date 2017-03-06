@@ -43,7 +43,7 @@ import java.util.ArrayList;
 		std = (float) Math.sqrt(powerSum/size);
 		//printDebug("std : " + std);
 		// (x - mean) > 3* std THEN x is outlier.
-		if(Math.abs((metric - mean)) > (2*std)){ 
+		if(Math.abs((metric - mean)) > (2.5*std)){
 			//printDebug(metric +  " IS OUTLIER !");
 			return true;}
 		return false;

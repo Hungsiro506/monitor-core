@@ -1,8 +1,11 @@
 package bd.paytv.main;
 
 import java.io.PrintStream;
+import java.util.Calendar;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -46,13 +49,41 @@ public class MonitorMain
 		  agentName = "172.17.0.1";*/
 	  	parsingArguments(args);
 	  	System.out.println("Can't take my eyes off you! ");
+        final ExecutorService executor 		= 	Executors.newFixedThreadPool(3);
+
+          /*final Calendar c = Calendar.getInstance();
+          c.add(Calendar.DAY_OF_MONTH, 1);
+          c.set(Calendar.HOUR_OF_DAY, 0);
+          c.set(Calendar.MINUTE, 0);
+          c.set(Calendar.SECOND, 0);
+          c.set(Calendar.MILLISECOND, 0);
+
+
+        // Using hook ShutDown and CountDownLatch Technique.
+	  	Runtime.getRuntime().addShutdownHook(new Thread("Shutdown thread"){
+	  	    @Override
+            public void run(){
+                executor.shutdown();
+                final long howManyTimeTillmidnight = (c.getTimeInMillis()-System.currentTimeMillis() - 3*60*60); // tru di 3 phut :))
+                try{
+                    if(executor.awaitTermination(howManyTimeTillmidnight, TimeUnit.MILLISECONDS)){
+                        executor.shutdownNow();
+                    }
+                } catch(InterruptedException e){
+                    e.printStackTrace();
+                }
+            }
+        });
+
+	  	final CountDownLatch doneSignal = new CountDownLatch(3);*/
+
 /*	  	ExecutorService executorKeeper	=	Executors.newFixedThreadPool(1);
 	  	ExecutorService executorTailer	=	Executors.newFixedThreadPool(4);
 		ExecutorService executorSender	=	Executors.newFixedThreadPool(4);*/
 	  	/*ExecutorService executorKeeper	=	Executors.newSingleThreadExecutor();
 	  	ExecutorService executorTailer	=	Executors.newSingleThreadExecutor();
 		ExecutorService executorSender	=	Executors.newSingleThreadExecutor();*/
-	  	ExecutorService executor 		= 	Executors.newFixedThreadPool(3);
+
 		
 		FtelQueue<MetricsMessage> queue	=	new FtelQueue<MetricsMessage>();
 		FtelQueue<MetricsMessage> immutableQueue	=	new FtelQueue<MetricsMessage>();
@@ -73,14 +104,15 @@ public class MonitorMain
 			executor.execute(sender);
 			executor.execute(keeper);
 			//LogTailer.appendData("/data/user/hungvd8/monitor/tailer.txt", true,2000);
+
 		  }catch(Exception ex){
 			  ex.printStackTrace();
 		  }finally{
 				/*executorTailer.shutdown();
 				executorSender.shutdown();
 				executorKeeper.shutdown();*/
-			  	executor.shutdown();
-			  	System.out.println("Deamon thread can not establised at " + System.currentTimeMillis());
+			  	//executor.shutdown();
+			  	System.out.println(" There an problem when execute tasks at " + System.currentTimeMillis());
 		  }
     // Byte code:
     //   0: aload_0
@@ -247,5 +279,6 @@ public class MonitorMain
     parsingArguments(test);
     System.out.println(serverIP);
   }
+
 }
 
