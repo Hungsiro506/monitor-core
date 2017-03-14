@@ -5,6 +5,9 @@ import  main.bd.sender.ISender;
 
 import  java.util.Timer;
 import  java.util.TimerTask;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
   *  Base  class  for  all  keeper
   */
@@ -16,6 +19,7 @@ import  java.util.TimerTask;
 	private	static	final int	INTERVAL	=	1000*60; 
 	protected ILogicer<T> logic;
 	private int lastKnowQueueOffSet = 0;
+	private final Logger LOGGER = LoggerFactory.getLogger(Keeper.class);
 	/**
 	  *  TimerTask,  check  offet  of  queue  every  minute
 	  *  reset  counter  and  set  new  offset  if  has  new  incoming  Message
@@ -121,6 +125,10 @@ import  java.util.TimerTask;
 		 */
 		if(this.lastKnowQueueOffSet < queueOffSet || (this.lastKnowQueueOffSet == 1000 && queueOffSet == 1000) ){
 			this.lastKnowQueueOffSet++;
+			if(lastKnowQueueOffSet > 1000){
+				LOGGER.info("[KEEPER] - lastKnowQueueOffSet : " +lastKnowQueueOffSet +" exceed MAXLENG." );
+				lastKnowQueueOffSet = 1000;
+				LOGGER.info("[KEEPER] - Reset lastKnowQueueOffSet to MAXLENG :  1000.");}
 			return true;
 		}	
 		return false;
