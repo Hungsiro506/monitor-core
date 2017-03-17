@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 	protected ILogicer<T> logic;
 	private int lastKnowQueueOffSet = 0;
 	private final Logger LOGGER = LoggerFactory.getLogger(Keeper.class);
+	private static final int MAXLENG = 1000;
 	/**
 	  *  TimerTask,  check  offet  of  queue  every  minute
 	  *  reset  counter  and  set  new  offset  if  has  new  incoming  Message
@@ -38,14 +39,20 @@ import org.slf4j.LoggerFactory;
 		@Override
 		public  void  run()  {
 			//  TODO  Auto-generated  method  stub
-			
-			if(lastOffset  ==  queue.count()){
-				increaseCounter();
-			}
-			
-			else  if(lastOffset  <  queue.count()){
+			if(queue.count() == MAXLENG){
+				queue.resetQueue();
+				lastKnowQueueOffSet = 0;
 				resetCounter();
-				this.setLastOffSet(queue.count());
+				LOGGER.info("[KEEPER] - Queue Length exceed MAXLENG - Reset Queue and LastKnowQueueOffSet" );
+			}else{
+				if(lastOffset  ==  queue.count()){
+					increaseCounter();
+				}
+				
+				else  if(lastOffset  <  queue.count()){
+					resetCounter();
+					this.setLastOffSet(queue.count());
+				}
 			}
 			System.out.println("Counter " + counter); 
 		}
@@ -123,12 +130,8 @@ import org.slf4j.LoggerFactory;
 			lastKnowQueue off set < current queue offset
 			incase the queue is full (MAXSIZE == 1000) -> it may lead to lastKnowOffSet == QueueOffSet == 1000
 		 */
-		if(this.lastKnowQueueOffSet < queueOffSet || (this.lastKnowQueueOffSet == 1000 && queueOffSet == 1000) ){
+		if(this.lastKnowQueueOffSet < queueOffSet ){
 			this.lastKnowQueueOffSet++;
-			if(lastKnowQueueOffSet > 1000){
-				LOGGER.info("[KEEPER] - lastKnowQueueOffSet : " +lastKnowQueueOffSet +" exceed MAXLENG." );
-				lastKnowQueueOffSet = 1000;
-				LOGGER.info("[KEEPER] - Reset lastKnowQueueOffSet to MAXLENG :  1000.");}
 			return true;
 		}	
 		return false;

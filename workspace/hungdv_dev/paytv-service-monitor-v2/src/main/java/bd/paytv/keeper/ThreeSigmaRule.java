@@ -5,6 +5,7 @@ import java.util.ArrayList;
  class ThreeSigmaRule implements ILogicer<Float> {
 	private ArrayList<Float> metrics;
 	public	ThreeSigmaRule(){
+		// max 20 elements. 
 		this.metrics	=	new	ArrayList<Float>();
 	}
 	/**
