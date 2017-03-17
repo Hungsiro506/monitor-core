@@ -7,6 +7,8 @@ import  java.util.Map;
 import  java.util.Set;
 import  java.util.concurrent.ExecutorService;
 import  java.util.concurrent.Executors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import  main.bd.queue.*;
 import  main.bd.message.*;
@@ -25,7 +27,7 @@ public  class  ZabbixSenderImpl<T>  implements  ISender<T>,  Runnable  {
 	private  String  agentIp;
 	private  int  wattingNewMessage  =  2000;
 	private  boolean  shouldIRun  =  true;
-	
+	private final Logger LOGGER = LoggerFactory.getLogger(ZabbixSenderImpl.class);
 	
 	/**
 	  *  
@@ -157,9 +159,11 @@ public  class  ZabbixSenderImpl<T>  implements  ISender<T>,  Runnable  {
 			}	
 		}catch(Exception  e){
 			e.printStackTrace();
+			LOGGER.warn(" - [SENDER] exception in run " + e.getMessage());
 		}finally{
 			shouldIRun  = false;
 			System.out.println("Zabbix sender has fail down." + System.currentTimeMillis());
+			LOGGER.error(" [SENDER] Sender has fail down ");
 		}
 	}
 

@@ -80,5 +80,10 @@ public class FtelQueue<T> {
 	public int count(){
 		return this.queue.size();
 	}
+	public void resetQueue(){
+		while(!this.queue.isEmpty()){
+			this.queue.removeFirst();
+		}
+	}
 	
 }
