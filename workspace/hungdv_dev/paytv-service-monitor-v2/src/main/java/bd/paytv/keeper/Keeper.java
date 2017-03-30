@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 	  *	
 	  */
 	class  RunCheckCounter  extends  TimerTask{
+		// lastOffset : current offset of the queue (position of last msg in queue)
 		private  int  lastOffset;
 		private  void  setLastOffSet(int  os){
 			this.lastOffset  =  os;
@@ -43,6 +44,7 @@ import org.slf4j.LoggerFactory;
 				queue.resetQueue();
 				lastKnowQueueOffSet = 0;
 				resetCounter();
+				lastOffset  =  queue.count();
 				LOGGER.info("[KEEPER] - Queue Length exceed MAXLENG - Reset Queue and LastKnowQueueOffSet" );
 			}else{
 				if(lastOffset  ==  queue.count()){
